@@ -13,7 +13,7 @@ format = """
 #format = '$all$directory$character'
  
 # Wait 10 milliseconds for starship to check files under the current directory.
-scan_timeout = 10
+scan_timeout = 100
 command_timeout = 500
 add_newline = true
 
