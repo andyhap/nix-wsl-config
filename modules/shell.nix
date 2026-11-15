@@ -17,11 +17,8 @@
   home.file.".config/starship.toml".source =
     ./starship/ctp-blue.toml;
 
-  programs.zsh = {
+  programs.bash = {
     enable = true;
-
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
 
     shellAliases = {
       # --- Git ---
@@ -49,34 +46,34 @@
       grep = "rg";
     };
 
-    initContent = ''
+    initExtra = ''
       # --- Prompt & Navigation ---
-      eval "$(zoxide init zsh)"
-      eval "$(starship init zsh)"
+      eval "$(zoxide init bash)"
+      eval "$(starship init bash)"
 
       # --- Home Manager ---
-      function rebuild {
+      rebuild() {
         home-manager --flake "$HOME/nix-wsl-config#andyhap" switch "$@"
       }
 
-      function rebuild-build {
+      rebuild-build() {
         nix build "$HOME/nix-wsl-config#homeConfigurations.andyhap.activationPackage" --no-link "$@"
       }
 
-      function rollback {
+      rollback() {
         home-manager --flake "$HOME/nix-wsl-config#andyhap" switch --rollback "$@"
       }
 
-      function gens {
+      gens() {
         home-manager generations
       }
 
-      function nix-check {
+      nix-check() {
         home-manager -n --flake "$HOME/nix-wsl-config#andyhap" switch
       }
 
       # --- Flake Management ---
-      function update {
+      update() {
         (
           cd "$HOME/nix-wsl-config" &&
           nix flake update &&
@@ -84,14 +81,14 @@
         )
       }
 
-      function update-hm {
+      update-hm() {
         (
           cd "$HOME/nix-wsl-config" &&
           nix flake update home-manager
         )
       }
 
-      function update-nixpkgs {
+      update-nixpkgs() {
         (
           cd "$HOME/nix-wsl-config" &&
           nix flake update nixpkgs
@@ -99,7 +96,7 @@
       }
 
       # --- Repository Diagnostics ---
-      function dirty {
+      dirty() {
         git -C "$HOME/nix-wsl-config" status --short
       }
     '';
