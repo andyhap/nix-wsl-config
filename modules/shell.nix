@@ -13,6 +13,10 @@
     fzf
   ];
 
+  # --- Starship Theme ---
+  home.file.".config/starship.toml".source =
+    ./starship/ctp-blue.toml;
+
   programs.zsh = {
     enable = true;
 
