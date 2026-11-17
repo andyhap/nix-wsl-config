@@ -40,5 +40,14 @@
     # Database
     postgresql
     redis
+
+    # Nix language server
+    nixd
+
+    # Networking & IPC
+    socat
+
+    # shell check
+    shellcheck
   ];
 }

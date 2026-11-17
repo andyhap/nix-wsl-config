@@ -5,9 +5,9 @@
 palette = "catppuccin_mocha"
 
 # custom format
-format = """
-[╭─ $shell──$nix_shell───────────── $memory_usage ──╌╌ $nodejs$python$golang$ocaml $fill ╌╌─╮](overlay0)
-[├╌](overlay0)$sudo$username$hostname$localip$directory$git_branch$git_commit$git_metrics [$fill $cmd_duration ┘](overlay0)
+format = """\
+[╭─ $shell──$nix_shell───────────── $memory_usage ──╌╌ $cmd_duration](overlay0)
+[├╌ $sudo$username$hostname$localip$directory$git_branch$git_commit$git_metrics](overlay0)
 [╰─ $battery $character](overlay0) """
 
 #format = '$all$directory$character'
