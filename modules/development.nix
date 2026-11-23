@@ -37,7 +37,7 @@
     git
     gh
 
-    # Database
+    # Database clients / tools
     postgresql
     redis
 
@@ -47,7 +47,7 @@
     # Networking & IPC
     socat
 
-    # shell check
+    # Shell checking
     shellcheck
   ];
 }

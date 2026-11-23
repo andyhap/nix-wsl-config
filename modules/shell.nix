@@ -3,7 +3,6 @@
 
 {
   home.packages = with pkgs; [
-    zsh
     starship
     zoxide
     eza
@@ -13,7 +12,6 @@
     fzf
   ];
 
-  # --- Starship Theme ---
   home.file.".config/starship.toml".source =
     ./starship/ctp-blue.toml;
 
@@ -21,58 +19,54 @@
     enable = true;
 
     shellAliases = {
-      # --- Git ---
+      # Git
       gs = "git status";
       ga = "git add .";
       gcm = "git commit -m";
       gp = "git push";
 
-      # --- Navigation ---
+      # Navigation
       croot = "cd ~/nix-wsl-config";
 
-      # --- Nix maintenance ---
+      # Nix maintenance
       gc = "nix store gc";
       nix-clean = "nix store gc && nix store optimise";
       nixfast = "nix shell nixpkgs#";
 
-      # --- Config editing ---
+      # Config editing
       edit-home = "nano ~/nix-wsl-config/home.nix";
       edit-flake = "nano ~/nix-wsl-config/flake.nix";
       edit-shell = "nano ~/nix-wsl-config/modules/shell.nix";
 
-      # --- Shell utilities ---
+      # Shell utilities
       ll = "eza -lah";
       cat = "bat";
       grep = "rg";
     };
 
     initExtra = ''
-      # --- Prompt & Navigation ---
+      # Prompt & Navigation
       eval "$(zoxide init bash)"
       eval "$(starship init bash)"
 
-      # --- Home Manager ---
+      # NixOS configuration
       rebuild() {
-        home-manager --flake "$HOME/nix-wsl-config#andyhap" switch "$@"
+        sudo nixos-rebuild switch --flake "$HOME/nix-wsl-config#nixos" "$@"
       }
 
       rebuild-build() {
-        nix build "$HOME/nix-wsl-config#homeConfigurations.andyhap.activationPackage" --no-link "$@"
+        nix build "$HOME/nix-wsl-config#nixosConfigurations.nixos.config.system.build.toplevel" --no-link "$@"
       }
 
       rollback() {
-        home-manager --flake "$HOME/nix-wsl-config#andyhap" switch --rollback "$@"
-      }
-
-      gens() {
-        home-manager generations
+        sudo nixos-rebuild switch --rollback "$@"
       }
 
       nix-check() {
-        home-manager -n --flake "$HOME/nix-wsl-config#andyhap" switch
+        nix flake check "$HOME/nix-wsl-config" "$@"
       }
 
-      # --- Flake Management ---
+      # Flake management
       update() {
         (
           cd "$HOME/nix-wsl-config" &&
@@ -95,7 +89,7 @@
         )
       }
 
-      # --- Repository Diagnostics ---
+      # Repository diagnostics
       dirty() {
         git -C "$HOME/nix-wsl-config" status --short
       }
