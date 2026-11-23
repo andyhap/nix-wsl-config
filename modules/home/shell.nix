@@ -34,6 +34,12 @@
       restart-pg = "sudo systemctl restart postgresql.target";
       status-pg = "systemctl status postgresql.target postgresql.service --no-pager";
 
+      # Redis (on-demand)
+      start-redis = "sudo systemctl start redis.service";
+      stop-redis = "sudo systemctl stop redis.service";
+      restart-redis = "sudo systemctl restart redis.service";
+      status-redis = "systemctl status redis.service --no-pager";
+
       # Nix maintenance
       gc = "nix store gc";
       nix-clean = "nix store gc && nix store optimise";

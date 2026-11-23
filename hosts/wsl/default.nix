@@ -1,4 +1,4 @@
-{ ... }:
+{ claude-code, antigravity-nix, ... }:
 
 {
   imports = [
@@ -10,6 +10,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+
+    extraSpecialArgs = {
+      inherit claude-code antigravity-nix;
+    };
 
     users.andyhap = import ../../home.nix;
   };
