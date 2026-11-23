@@ -1,78 +1,80 @@
 # nix-wsl-config
 
-Konfigurasi **NixOS-WSL** pribadi untuk workstation development di Windows (WSL2), dikelola sepenuhnya secara deklaratif dengan **Nix Flakes** + **Home Manager**.
+**English** | [Bahasa Indonesia](README.id.md)
 
-Repo ini berfungsi sebagai cadangan setup saya sekaligus referensi kalau ada yang ingin meniru atau mengadaptasinya.
+My personal **NixOS-WSL** configuration for a development workstation on Windows (WSL2), managed fully declaratively with **Nix Flakes** + **Home Manager**.
 
-## Isi Setup
+This repo serves as a backup of my setup and as a reference for anyone who wants to copy or adapt it.
 
-| Kategori | Isi |
+## What's Included
+
+| Category | Contents |
 | --- | --- |
-| **Base** | NixOS 26.05 · NixOS-WSL · Home Manager (sebagai modul NixOS) |
-| **Bahasa & Toolchain** | PHP 8.4 + Composer · Node.js, Bun, pnpm · Python 3.13 + uv · Rust (rustc, cargo) · Go · JDK 21 · GCC, Clang 21, CMake, Make |
-| **Language Server** | `nixd`, `rust-analyzer`, `python-lsp-server` |
-| **Database** | PostgreSQL 18 · Redis (keduanya **tidak** auto-start, dijalankan saat dibutuhkan) |
+| **Base** | NixOS 26.05 · NixOS-WSL · Home Manager (as a NixOS module) |
+| **Languages & Toolchains** | PHP 8.4 + Composer · Node.js, Bun, pnpm · Python 3.13 + uv · Rust (rustc, cargo) · Go · JDK 21 · GCC, Clang 21, CMake, Make |
+| **Language Servers** | `nixd`, `rust-analyzer`, `python-lsp-server` |
+| **Databases** | PostgreSQL 18 · Redis (neither starts automatically; run them on demand) |
 | **CLI Tools** | git, gh, starship, zoxide, eza, bat, fd, ripgrep, fzf, shellcheck, socat |
 | **AI Agents** | [Claude Code](https://github.com/sadjow/claude-code-nix) · [Google Antigravity CLI](https://github.com/jacopone/antigravity-nix) |
-| **Prompt** | Starship dengan tema Catppuccin Mocha |
+| **Prompt** | Starship with the Catppuccin Mocha theme |
 
-## Struktur Direktori
+## Directory Structure
 
 ```
 .
 ├── flake.nix                     # Entry point: inputs & nixosConfigurations.nixos
 ├── flake.lock
-├── home.nix                      # Konfigurasi Home Manager untuk user
+├── home.nix                      # Home Manager configuration for the user
 ├── hosts/
-│   └── wsl/default.nix           # Host WSL: timezone, home-manager, stateVersion
+│   └── wsl/default.nix           # WSL host: timezone, home-manager, stateVersion
 └── modules/
-    ├── system/                   # Modul level sistem (NixOS)
-    │   ├── wsl.nix               # Pengaturan NixOS-WSL (default user)
-    │   ├── users.nix             # Definisi user
-    │   ├── nix.nix               # Flakes, auto-optimise, limit build untuk WSL
-    │   ├── packages.nix          # Import modul development
-    │   └── services.nix          # Import service (PostgreSQL, Redis)
-    ├── development/default.nix   # Bahasa pemrograman & toolchain
+    ├── system/                   # System-level (NixOS) modules
+    │   ├── wsl.nix               # NixOS-WSL settings (default user)
+    │   ├── users.nix             # User definition
+    │   ├── nix.nix               # Flakes, auto-optimise, build limits for WSL
+    │   ├── packages.nix          # Imports the development module
+    │   └── services.nix          # Imports services (PostgreSQL, Redis)
+    ├── development/default.nix   # Programming languages & toolchains
     ├── services/
     │   ├── postgresql.nix        # PostgreSQL 18, localhost-only, scram-sha-256
-    │   └── redis.nix             # Redis, bind 127.0.0.1:6379
-    └── home/                     # Modul Home Manager
-        ├── shell.nix             # Bash, alias, fungsi helper, CLI tools
+    │   └── redis.nix             # Redis, bound to 127.0.0.1:6379
+    └── home/                     # Home Manager modules
+        ├── shell.nix             # Bash, aliases, helper functions, CLI tools
         ├── agents.nix            # Claude Code & Antigravity CLI
         └── starship/ctp-blue.toml
 ```
 
-## Instalasi
+## Installation
 
-### 1. Pasang NixOS-WSL
+### 1. Install NixOS-WSL
 
-Ikuti panduan resmi [NixOS-WSL](https://github.com/nix-community/NixOS-WSL): unduh `nixos.wsl` dari halaman release, lalu jalankan (double-click) atau impor lewat PowerShell:
+Follow the official [NixOS-WSL](https://github.com/nix-community/NixOS-WSL) guide: download `nixos.wsl` from the releases page, then open it (double-click) or import it from PowerShell:
 
 ```powershell
 wsl --install --from-file nixos.wsl
 ```
 
-### 2. Clone repo ini
+### 2. Clone this repo
 
-Konfigurasi ini mengasumsikan repo berada di `~/nix-wsl-config` (dipakai oleh alias & fungsi helper).
+This configuration assumes the repo lives at `~/nix-wsl-config` (the aliases and helper functions rely on it).
 
 ```bash
 nix-shell -p git --run "git clone https://github.com/andyhap/nix-wsl-config.git ~/nix-wsl-config"
 cd ~/nix-wsl-config
 ```
 
-### 3. Sesuaikan dengan user kamu (kalau bukan saya)
+### 3. Adapt it to your user (if you're not me)
 
-Username `andyhap` di-hardcode di beberapa tempat. Ganti dengan username kamu di:
+The username `andyhap` is hardcoded in a few places. Replace it with your own username in:
 
 - `modules/system/wsl.nix` → `wsl.defaultUser`
-- `modules/system/users.nix` → `users.users.<nama>` dan `description`
-- `hosts/wsl/default.nix` → `home-manager.users.<nama>`
-- `home.nix` → `home.username` dan `home.homeDirectory`
+- `modules/system/users.nix` → `users.users.<name>` and `description`
+- `hosts/wsl/default.nix` → `home-manager.users.<name>`
+- `home.nix` → `home.username` and `home.homeDirectory`
 
-Sesuaikan juga `time.timeZone` (di `hosts/wsl/default.nix`) dan timezone PostgreSQL (di `modules/services/postgresql.nix`) kalau tidak berada di WIB.
+Also adjust `time.timeZone` (in `hosts/wsl/default.nix`) and the PostgreSQL timezone (in `modules/services/postgresql.nix`) if you're not in Asia/Jakarta (WIB).
 
-> **Catatan:** Jangan ubah `system.stateVersion` / `home.stateVersion` pada sistem yang sudah berjalan kecuali kamu paham konsekuensinya.
+> **Note:** Don't change `system.stateVersion` / `home.stateVersion` on an existing system unless you understand the consequences.
 
 ### 4. Build & switch
 
@@ -80,30 +82,30 @@ Sesuaikan juga `time.timeZone` (di `hosts/wsl/default.nix`) dan timezone Postgre
 sudo nixos-rebuild switch --flake ~/nix-wsl-config#nixos
 ```
 
-Setelah itu restart WSL dari PowerShell (`wsl --shutdown`) lalu buka lagi, terutama jika `defaultUser` diganti.
+Afterwards, restart WSL from PowerShell (`wsl --shutdown`) and open it again, especially if you changed `defaultUser`.
 
-## Penggunaan Sehari-hari
+## Daily Usage
 
-Setelah build pertama, perintah-perintah berikut tersedia di Bash.
+After the first build, the following commands are available in Bash.
 
-### Manajemen NixOS
+### NixOS Management
 
-| Perintah | Fungsi |
+| Command | Description |
 | --- | --- |
-| `rebuild` | `nixos-rebuild switch` dari flake ini |
-| `rebuild-build` | Build konfigurasi tanpa switch (untuk mengecek error) |
-| `rollback` | Kembali ke generasi sebelumnya |
+| `rebuild` | `nixos-rebuild switch` from this flake |
+| `rebuild-build` | Build the configuration without switching (to check for errors) |
+| `rollback` | Switch back to the previous generation |
 | `nix-check` | `nix flake check` |
-| `update` | Update semua input flake lalu rebuild |
-| `update-nixpkgs` / `update-hm` | Update input `nixpkgs` / `home-manager` saja |
-| `dirty` | Lihat perubahan yang belum di-commit di repo config |
-| `gc` / `nix-clean` | Garbage collect store (+ optimise) |
-| `nixfast <pkg>` | Shell sementara dengan paket dari nixpkgs, mis. `nixfast htop` |
-| `croot` | `cd` ke repo config |
+| `update` | Update all flake inputs, then rebuild |
+| `update-nixpkgs` / `update-hm` | Update only the `nixpkgs` / `home-manager` input |
+| `dirty` | Show uncommitted changes in the config repo |
+| `gc` / `nix-clean` | Garbage-collect the store (+ optimise) |
+| `nixfast <pkg>` | Temporary shell with a package from nixpkgs, e.g. `nixfast htop` |
+| `croot` | `cd` into the config repo |
 
-### Database (on-demand)
+### Databases (on demand)
 
-PostgreSQL dan Redis sengaja **tidak** dijalankan otomatis saat WSL start supaya hemat resource.
+PostgreSQL and Redis intentionally do **not** start when WSL boots, to save resources.
 
 | PostgreSQL | Redis |
 | --- | --- |
@@ -112,46 +114,46 @@ PostgreSQL dan Redis sengaja **tidak** dijalankan otomatis saat WSL start supaya
 | `restart-pg` | `restart-redis` |
 | `status-pg` | `status-redis` |
 
-**Catatan PostgreSQL:**
-- Hanya listen di `localhost:5432`, tidak terekspos ke jaringan.
-- User `postgres` login via peer auth: `sudo -u postgres psql`.
-- User/role lain wajib memakai password (`scram-sha-256`), jadi buat role dengan password dulu, misalnya:
+**PostgreSQL notes:**
+- Listens only on `localhost:5432`; not exposed to the network.
+- The `postgres` user logs in via peer auth: `sudo -u postgres psql`.
+- Every other user/role must use a password (`scram-sha-256`), so create a role with a password first, for example:
   ```sql
   CREATE ROLE myapp WITH LOGIN PASSWORD 'secret' CREATEDB;
   ```
 
-**Catatan Redis:** bind ke `127.0.0.1:6379`, `protected-mode` aktif, persistence memakai RDB bawaan.
+**Redis notes:** bound to `127.0.0.1:6379`, `protected-mode` enabled, persistence uses the default RDB snapshots.
 
-### Alias lain
+### Other Aliases
 
-| Alias | Perintah |
+| Alias | Command |
 | --- | --- |
 | `gs`, `ga`, `gcm`, `gp` | `git status` / `add .` / `commit -m` / `push` |
 | `ll` | `eza -lah` |
 | `cat` | `bat` |
 | `grep` | `rg` |
-| `edit-home`, `edit-flake`, `edit-shell` | Buka file config terkait dengan `nano` |
+| `edit-home`, `edit-flake`, `edit-shell` | Open the related config file in `nano` |
 
-## Catatan Desain
+## Design Notes
 
-- **Build dibatasi** (`max-jobs = 1`, `cores = 2`) di `modules/system/nix.nix` agar WSL tidak menghabiskan RAM/CPU Windows. Naikkan kalau mesin kamu kuat.
-- **`auto-optimise-store`** aktif untuk menghemat ruang disk VHDX.
-- Home Manager dipakai sebagai modul NixOS (`useGlobalPkgs` + `useUserPackages`), jadi cukup satu perintah `rebuild` untuk sistem dan user sekaligus.
-- Input flake eksternal (`claude-code`, `antigravity-nix`) diteruskan ke modul lewat `specialArgs` / `extraSpecialArgs`.
+- **Builds are limited** (`max-jobs = 1`, `cores = 2`) in `modules/system/nix.nix` so WSL doesn't eat up Windows' RAM/CPU. Raise them if your machine can handle it.
+- **`auto-optimise-store`** is enabled to save space on the VHDX disk.
+- Home Manager is used as a NixOS module (`useGlobalPkgs` + `useUserPackages`), so a single `rebuild` applies both the system and the user configuration.
+- External flake inputs (`claude-code`, `antigravity-nix`) are passed to modules via `specialArgs` / `extraSpecialArgs`.
 
-## Menambah Sesuatu
+## Adding Things
 
-- **Paket development / toolchain** → `modules/development/default.nix`
-- **CLI tool atau alias user** → `modules/home/shell.nix`
-- **Service baru** → buat file di `modules/services/`, lalu import di `modules/system/services.nix`
-- **Input flake baru** → tambahkan di `flake.nix`, teruskan via `specialArgs` (dan `extraSpecialArgs` di `hosts/wsl/default.nix` jika dipakai Home Manager)
+- **Development packages / toolchains** → `modules/development/default.nix`
+- **CLI tools or user aliases** → `modules/home/shell.nix`
+- **New services** → create a file in `modules/services/`, then import it in `modules/system/services.nix`
+- **New flake inputs** → add them to `flake.nix` and pass them via `specialArgs` (and `extraSpecialArgs` in `hosts/wsl/default.nix` if Home Manager needs them)
 
-Lalu jalankan `rebuild`.
+Then run `rebuild`.
 
-## Kredit
+## Credits
 
 - [NixOS-WSL](https://github.com/nix-community/NixOS-WSL)
 - [Home Manager](https://github.com/nix-community/home-manager)
-- [claude-code-nix](https://github.com/sadjow/claude-code-nix) oleh sadjow
-- [antigravity-nix](https://github.com/jacopone/antigravity-nix) oleh jacopone
-- Tema Starship oleh a3chron, memakai palet [Catppuccin](https://github.com/catppuccin/catppuccin)
+- [claude-code-nix](https://github.com/sadjow/claude-code-nix) by sadjow
+- [antigravity-nix](https://github.com/jacopone/antigravity-nix) by jacopone
+- Starship theme by a3chron, using the [Catppuccin](https://github.com/catppuccin/catppuccin) palette
