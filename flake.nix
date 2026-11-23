@@ -1,30 +1,51 @@
-
 {
-  description = "Personal WSL Development Workstation";
+  description = "Personal NixOS-WSL Development Workstation";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    home-manager = {
-      url = "github:nix-community/home-manager";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+    };
+
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
-    let
+  outputs = {
+    self,
+    nixpkgs,
+    nixos-wsl,
+    home-manager,
+    claude-code,
+    antigravity-nix, 
+   ...
+  }: {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-      };
-    in {
-      homeConfigurations.andyhap =
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
 
-          modules = [
-            ./home.nix
-          ];
-        };
+      specialArgs = {
+        inherit claude-code antigravity-nix;
+      };
+
+      modules = [
+        nixos-wsl.nixosModules.default
+        home-manager.nixosModules.home-manager
+        ./hosts/wsl/default.nix
+      ];
     };
+  };
 }

@@ -1,15 +1,13 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   imports = [
-    ./modules/packages.nix
+    ./modules/home
   ];
 
   home = {
     username = "andyhap";
     homeDirectory = "/home/andyhap";
-
-    # Initial Home Manager compatibility version.
     stateVersion = "26.05";
   };
 
