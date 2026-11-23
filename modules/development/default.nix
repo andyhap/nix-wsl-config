@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     # PHP
     php84
     php84Packages.composer
@@ -37,8 +37,7 @@
     git
     gh
 
-    # Database clients / tools
-    postgresql
+    # Redis CLI / tools
     redis
 
     # Nix language server

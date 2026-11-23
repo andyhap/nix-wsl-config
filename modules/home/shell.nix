@@ -36,7 +36,7 @@
       # Config editing
       edit-home = "nano ~/nix-wsl-config/home.nix";
       edit-flake = "nano ~/nix-wsl-config/flake.nix";
-      edit-shell = "nano ~/nix-wsl-config/modules/shell.nix";
+      edit-shell = "nano ~/nix-wsl-config/modules/home/shell.nix";
 
       # Shell utilities
       ll = "eza -lah";
