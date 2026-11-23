@@ -28,6 +28,12 @@
       # Navigation
       croot = "cd ~/nix-wsl-config";
 
+      # PostgreSQL (on-demand)
+      start-pg = "sudo systemctl start postgresql.target";
+      stop-pg = "sudo systemctl stop postgresql.target";
+      restart-pg = "sudo systemctl restart postgresql.target";
+      status-pg = "systemctl status postgresql.target postgresql.service --no-pager";
+
       # Nix maintenance
       gc = "nix store gc";
       nix-clean = "nix store gc && nix store optimise";
