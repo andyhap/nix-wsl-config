@@ -4,7 +4,7 @@ Konfigurasi **NixOS-WSL** pribadi untuk workstation development di Windows (WSL2
 
 Repo ini berfungsi sebagai cadangan setup saya sekaligus referensi kalau ada yang ingin meniru atau mengadaptasinya.
 
-## ✨ Isi Setup
+## Isi Setup
 
 | Kategori | Isi |
 | --- | --- |
@@ -16,7 +16,7 @@ Repo ini berfungsi sebagai cadangan setup saya sekaligus referensi kalau ada yan
 | **AI Agents** | [Claude Code](https://github.com/sadjow/claude-code-nix) · [Google Antigravity CLI](https://github.com/jacopone/antigravity-nix) |
 | **Prompt** | Starship dengan tema Catppuccin Mocha |
 
-## 📁 Struktur Direktori
+## Struktur Direktori
 
 ```
 .
@@ -42,7 +42,7 @@ Repo ini berfungsi sebagai cadangan setup saya sekaligus referensi kalau ada yan
         └── starship/ctp-blue.toml
 ```
 
-## 🚀 Instalasi
+## Instalasi
 
 ### 1. Pasang NixOS-WSL
 
@@ -72,7 +72,7 @@ Username `andyhap` di-hardcode di beberapa tempat. Ganti dengan username kamu di
 
 Sesuaikan juga `time.timeZone` (di `hosts/wsl/default.nix`) dan timezone PostgreSQL (di `modules/services/postgresql.nix`) kalau tidak berada di WIB.
 
-> ⚠️ Jangan ubah `system.stateVersion` / `home.stateVersion` pada sistem yang sudah berjalan kecuali kamu paham konsekuensinya.
+> **Catatan:** Jangan ubah `system.stateVersion` / `home.stateVersion` pada sistem yang sudah berjalan kecuali kamu paham konsekuensinya.
 
 ### 4. Build & switch
 
@@ -82,7 +82,7 @@ sudo nixos-rebuild switch --flake ~/nix-wsl-config#nixos
 
 Setelah itu restart WSL dari PowerShell (`wsl --shutdown`) lalu buka lagi, terutama jika `defaultUser` diganti.
 
-## 🛠️ Penggunaan Sehari-hari
+## Penggunaan Sehari-hari
 
 Setelah build pertama, perintah-perintah berikut tersedia di Bash.
 
@@ -132,14 +132,14 @@ PostgreSQL dan Redis sengaja **tidak** dijalankan otomatis saat WSL start supaya
 | `grep` | `rg` |
 | `edit-home`, `edit-flake`, `edit-shell` | Buka file config terkait dengan `nano` |
 
-## ⚙️ Catatan Desain
+## Catatan Desain
 
 - **Build dibatasi** (`max-jobs = 1`, `cores = 2`) di `modules/system/nix.nix` agar WSL tidak menghabiskan RAM/CPU Windows. Naikkan kalau mesin kamu kuat.
 - **`auto-optimise-store`** aktif untuk menghemat ruang disk VHDX.
 - Home Manager dipakai sebagai modul NixOS (`useGlobalPkgs` + `useUserPackages`), jadi cukup satu perintah `rebuild` untuk sistem dan user sekaligus.
 - Input flake eksternal (`claude-code`, `antigravity-nix`) diteruskan ke modul lewat `specialArgs` / `extraSpecialArgs`.
 
-## ➕ Menambah Sesuatu
+## Menambah Sesuatu
 
 - **Paket development / toolchain** → `modules/development/default.nix`
 - **CLI tool atau alias user** → `modules/home/shell.nix`
@@ -148,7 +148,7 @@ PostgreSQL dan Redis sengaja **tidak** dijalankan otomatis saat WSL start supaya
 
 Lalu jalankan `rebuild`.
 
-## 🙏 Kredit
+## Kredit
 
 - [NixOS-WSL](https://github.com/nix-community/NixOS-WSL)
 - [Home Manager](https://github.com/nix-community/home-manager)
